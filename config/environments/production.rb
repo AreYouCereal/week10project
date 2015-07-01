@@ -1,6 +1,43 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+
+  # ///////////////////////////////////////////
+  # below i added and can be commented out///////////////////
+  config.active_job.queue_adapter = :delayed_job
+  # ////////////////////////////////////////////////////////
+
+  # or if that doesn't work comment below oout////////////
+  config.action_mailer.delivery_method = :smtp
+  # //////////////////////////////////////////////
+
+#  WENDI THIS Everything is configured now, for testing the application just start the rails server and create a new user. A new job will be added to the queue and you will notice the time required for creating a new user is drastically decreased. You can start running the jobs in queue by: 
+# $ bundle exec rake jobs:work
+
+
+
+  # SMTP settings for gmail
+  # ///////////////////////////////////////////////////////
+  # run into errors like Net::SMTPAuthenticationError while using gmail for sending out emails, visit your gmail settings and enable less secure apps to get the application working
+  # config.action_mailer.smtp_settings = {
+  #  :address              => "smtp.gmail.com",
+  #  :port                 => 587,
+  #  :user_name            => ENV['wendispeciale'],
+  #  :password             => ENV['nubbydon'],
+  #  :authentication       => "plain",
+  # :enable_starttls_auto => true
+  # }
+  #
+  ActionMailer::Base.smtp_settings = {
+  :port           => 587,
+  :address        => "smtp.mailgun.org",
+  :domain         => ENV['domain'],
+  :user_name      => ENV['username'],
+  :password       => ENV['password'],
+  :authentication => :plain,
+}}
+
+  #  /////////////////////////////////////////////////////////////
   # Code is not reloaded between requests.
   config.cache_classes = true
 

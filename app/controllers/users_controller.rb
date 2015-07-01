@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-
+# Hartls below
   def show
     @user = User.find(params[:id])
   end
@@ -24,4 +24,27 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :email, :password,
                                    :password_confirmation)
     end
+end
+
+# new app for sending mailer
+
+
+def create
+  @user = User.new(user_params)
+
+  respond_to do |format|
+    if @user.save
+
+      # Sends email to user when user is created.
+      SendEmailJob.set(wait: 20.seconds).perform_later(@user)
+      # Below might need to be commented if error
+      ExampleMailer.sample_email(@user).deliver
+
+      format.html { redirect_to @user, notice: 'User was successfully created.' }
+      format.json { render :show, status: :created, location: @user }
+    else
+      format.html { render :new }
+      format.json { render json: @user.errors, status: :unprocessable_entity }
+    end
+  end
 end
